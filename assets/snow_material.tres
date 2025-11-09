@@ -1,0 +1,8 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://c2oifk4nakpy1"]
+
+[ext_resource type="Texture2D" uid="uid://bp32hwowmw4yn" path="res://assets/Snow008A_1K-JPG_Color.jpg" id="1_afv53"]
+
+[resource]
+albedo_texture = ExtResource("1_afv53")
+uv1_scale = Vector3(0.2, 0.2, 0.2)
+uv1_triplanar = true

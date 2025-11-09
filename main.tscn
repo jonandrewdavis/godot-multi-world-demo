@@ -1,0 +1,148 @@
+[gd_scene load_steps=6 format=3 uid="uid://x2pppnvib0gy"]
+
+[ext_resource type="Script" uid="uid://b0l4w8gqs0kvq" path="res://main.gd" id="1_h2yge"]
+[ext_resource type="Theme" uid="uid://b3kq74llqlv3x" path="res://assets/MinimalUI4/MinimalUI.tres" id="2_1bvp3"]
+[ext_resource type="Texture2D" uid="uid://b8lmt03edc5vg" path="res://assets/snowmap.png" id="2_h2yge"]
+[ext_resource type="Texture2D" uid="uid://ccgifq3007e5q" path="res://assets/forestmap.png" id="3_1bvp3"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ig7tw"]
+properties/0/path = NodePath(".:current_players")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_h2yge")
+
+[node name="ServerInfo" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_1bvp3")
+
+[node name="MarginContainer" type="MarginContainer" parent="ServerInfo"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ServerInfo/MarginContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="ServerInfo/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ServerInfo/MarginContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Snow World"
+
+[node name="VSeparator" type="VSeparator" parent="ServerInfo/MarginContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="ServerInfo/MarginContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Forest World"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ServerInfo/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LabelBoxSnow" type="VBoxContainer" parent="ServerInfo/MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VSeparator" type="VSeparator" parent="ServerInfo/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="LabelBoxForest" type="VBoxContainer" parent="ServerInfo/MarginContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Menu" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -376.5
+offset_top = 50.0
+offset_right = 376.5
+offset_bottom = 341.0
+grow_horizontal = 2
+theme = ExtResource("2_1bvp3")
+
+[node name="MarginContainer" type="MarginContainer" parent="Menu"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Menu/MarginContainer"]
+layout_mode = 2
+
+[node name="LineEdit" type="LineEdit" parent="Menu/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+placeholder_text = "127.0.0.1"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Menu/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Menu/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TextureRect" type="TextureRect" parent="Menu/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+texture = ExtResource("2_h2yge")
+expand_mode = 3
+
+[node name="ButtonJoinSnow" type="Button" parent="Menu/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Enter Snow World"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="Menu/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+theme_override_constants/separation = 20
+
+[node name="TextureRect2" type="TextureRect" parent="Menu/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2"]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
+texture = ExtResource("3_1bvp3")
+expand_mode = 3
+
+[node name="ButtonJoinForest" type="Button" parent="Menu/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Enter Forest World"
+
+[node name="ButtonHost" type="Button" parent="Menu/MarginContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+text = "Host"
+
+[node name="Worlds" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_ig7tw")
