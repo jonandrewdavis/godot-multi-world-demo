@@ -1,5 +1,6 @@
 extends Node3D
 
+# TODO: remove the sync here and just rpc down the list to all players.
 # Rename this ndoe to "Network" 
 class_name Main
 
@@ -15,7 +16,6 @@ var char_scene = preload('res://assets/PlayerCharacter/PlayerCharacterScene.tscn
 
 # NOTE: The server tracks this via a multiplayer syncronizer on main.
 @export var server_worlds_enabled: bool = false
-@export var current_players: Dictionary = {}
 var current_world: WORLD_OPTIONS = WORLD_OPTIONS.SNOW
 
 enum WORLD_OPTIONS { 
@@ -69,9 +69,41 @@ func join_game(world_to_join: WORLD_OPTIONS = current_world):
 		current_world = world_to_join
 		%Menu.hide()
 
+
+
+@export var current_players: Dictionary = {}
+
+# Set up in _ready(): multiplayer.connected_to_server.connect(on_client_connected)
 func on_client_connected():
 	print("CLIENT: client connected to server: ", multiplayer.get_unique_id())
 	request_world.rpc_id(1, current_world)
+
+# This happens only on the server ( always called with rpc_id(1) )
+@rpc('any_peer') # Allow any peer to trigger it when joining
+func request_world(world: WORLD_OPTIONS):
+	var player_peer_id: int = multiplayer.get_remote_sender_id()
+
+	# When this changes, all the peers also get it.
+	current_players[player_peer_id] = {
+		'peer_id': player_peer_id, 
+		'world_id': world
+	}
+	add_player_to_game(player_peer_id, world)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # NOTE: Not used. The player must request to be added rather than on connect.
 #func on_peer_connected(id: int):
@@ -140,16 +172,6 @@ func remove_player_from_game_with_reparent(id: int):
 	if player_to_remove != -1 and not skip_self:
 		players[player_to_remove].queue_free()
 
-
-# This happens only on the server (always called with rpc_id(1))
-@rpc('any_peer')
-func request_world(world: WORLD_OPTIONS):
-	var player_peer_id: int = multiplayer.get_remote_sender_id()
-	current_players[player_peer_id] = {
-		'peer_id': player_peer_id, 
-		'world_id': world
-	}
-	add_player_to_game(player_peer_id, world)
 	
 # Server calls this to clients who have a world...
 @rpc("authority")
