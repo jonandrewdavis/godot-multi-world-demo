@@ -7,7 +7,7 @@ class_name World
 @export var container: Node3D
 @export var spawner: MultiplayerSpawner
 
-var char_scene = preload('res://addons/PlayerCharacter/PlayerCharacterScene.tscn')
+var char_scene = preload('res://assets/PlayerCharacter/PlayerCharacterScene.tscn')
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

@@ -11,7 +11,7 @@ var IP_ADDRESS = '127.0.0.1'
 @onready var snow_scene = preload("res://worlds/snow.tscn")
 @onready var forest_scene = preload("res://worlds/forest.tscn")
 
-var char_scene = preload('res://addons/PlayerCharacter/PlayerCharacterScene.tscn')
+var char_scene = preload('res://assets/PlayerCharacter/PlayerCharacterScene.tscn')
 
 # NOTE: The server tracks this via a multiplayer syncronizer on main.
 @export var server_worlds_enabled: bool = false

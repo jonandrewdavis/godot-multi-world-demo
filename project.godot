@@ -13,10 +13,15 @@ config_version=5
 config/name="MultiWorldDemo"
 run/main_scene="uid://x2pppnvib0gy"
 config/features=PackedStringArray("4.5", "Forward Plus")
+config/icon="uid://ctt40rprmg62k"
 
 [autoload]
 
 Global="*res://global.gd"
+
+[debug]
+
+gdscript/warnings/unused_signal=0
 
 [input]
 
