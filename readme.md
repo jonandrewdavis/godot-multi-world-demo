@@ -2,4 +2,4 @@
 
 Seemlessly swap players between worlds, with perfect sync
 
-![assets/spash.png]
+![assets/splash.png]
