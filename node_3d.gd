@@ -1,6 +1,13 @@
 extends Node3D
 
-@export var server_version: String 
+var test: String = ''
+
+@export var server_version: String:
+	get:
+		return test
+	set(value):
+		print('DEBUG: I CALLED THE SETTER w/: ', value)
+		test = value
 
 var local_version = '1.0'
 
@@ -13,6 +20,5 @@ func _ready() -> void:
 
 func _check_client():
 	await get_tree().create_timer(1.0).timeout
-	print(server_version, local_version)
 	if local_version != server_version:
 		get_tree().quit()
