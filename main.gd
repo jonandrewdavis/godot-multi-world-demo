@@ -130,6 +130,17 @@ func remove_player_from_game(id: int):
 	if player_to_remove != -1:
 		players[player_to_remove].queue_free()
 
+@rpc("authority", 'call_local')
+func remove_player_from_game_with_reparent(id: int):
+	# detect if we are the one being removed!
+	var skip_self = id == multiplayer.get_unique_id()
+	# rest of the func
+	var players: Array[Node] = get_tree().get_nodes_in_group('Players')
+	var player_to_remove = players.find_custom(func(item): return item.name == str(id))
+	if player_to_remove != -1 and not skip_self:
+		players[player_to_remove].queue_free()
+
+
 # This happens only on the server (always called with rpc_id(1))
 @rpc('any_peer')
 func request_world(world: WORLD_OPTIONS):
@@ -165,16 +176,22 @@ func join_world_in_progress(world: WORLD_OPTIONS):
 
 	request_move_to_world.rpc_id(1, world)
 	%Menu.hide()
-
 	
-# TODO: Try the reparent tactic
+var try_reparent = false
+	
+# TODO: Try the reparent tactic, clean up
 @rpc('any_peer')
 func request_move_to_world(world: WORLD_OPTIONS):
-	var player_peer_id: int = multiplayer.get_remote_sender_id()	
-	current_players.erase(player_peer_id)
-	remove_player_from_game.rpc(player_peer_id)
-	
-	respond_to_move_world.rpc_id(player_peer_id, world)
+	if try_reparent:
+		var player_peer_id: int = multiplayer.get_remote_sender_id()	
+		current_players.erase(player_peer_id)
+		remove_player_from_game_with_reparent(player_peer_id)
+		# TODO: manually add, reparent, then enable visibility... lotta work
+	else:
+		var player_peer_id: int = multiplayer.get_remote_sender_id()	
+		current_players.erase(player_peer_id)
+		remove_player_from_game.rpc(player_peer_id)
+		respond_to_move_world.rpc_id(player_peer_id, world)
 
 # called on the client, from the server (authority).
 @rpc('authority')
@@ -226,4 +243,4 @@ func update_server_display_text():
 		var new_label = Label.new()
 		new_label.text = str(id)
 		new_label.name = str(id)
-		%LabelBoxForest.add_child(new_label, true)	
+		%LabelBoxForest.add_child(new_label, true)
