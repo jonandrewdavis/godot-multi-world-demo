@@ -23,6 +23,10 @@ Global="*res://global.gd"
 
 gdscript/warnings/unused_signal=0
 
+[display]
+
+window/per_pixel_transparency/allowed=true
+
 [input]
 
 move_left={
