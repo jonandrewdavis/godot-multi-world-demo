@@ -172,7 +172,7 @@ shape = SubResource("CapsuleShape3D_xhngq")
 
 [node name="OrbitView" parent="." instance=ExtResource("3_hcr6r")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-collision_mask = 2
+collision_mask = 3
 mouse_sens = 0.004
 min_limit_x = -0.8726646259971648
 max_limit_x = 0.08726646259971647

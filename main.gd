@@ -29,18 +29,16 @@ enum WORLD_OPTIONS {
 
 func _ready() -> void:
 	add_to_group('Main')
+	get_window().transparent = OS.has_feature('server')
+	get_window().transparent_bg = OS.has_feature('server')
 	
 	if OS.has_feature('server'):
 		host_game()
-	else:	
+	else:
 		%ButtonJoinSnow.pressed.connect(func(): join_game(WORLD_OPTIONS.SNOW))
 		%ButtonJoinForest.pressed.connect(func(): join_game(WORLD_OPTIONS.FOREST))
 
 func host_game():
-	# NOTE: needs per-pixel transparency
-	#get_window().transparent = true
-	#get_window().transparent_bg = true
-
 	peer.create_server(PORT)
 	multiplayer.multiplayer_peer = peer
 	multiplayer.peer_disconnected.connect(on_peer_disconnected)
@@ -55,6 +53,7 @@ func host_game():
 		%Worlds.add_child(snow_world)
 		%Worlds.add_child(forest_world)
 
+	%ServerBackground.show()
 	%ServerInfo.show()
 	%Menu.queue_free()
 
@@ -68,8 +67,6 @@ func join_game(world_to_join: WORLD_OPTIONS = current_world):
 		multiplayer.multiplayer_peer = peer
 		current_world = world_to_join
 		%Menu.hide()
-
-
 
 @export var current_players: Dictionary = {}
 
