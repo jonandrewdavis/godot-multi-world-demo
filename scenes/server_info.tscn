@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://cy7dkaw7yua30"]
 
 [ext_resource type="StyleBox" uid="uid://qckkufi4svwo" path="res://assets/server_panel_box.tres" id="1_arsx7"]
-[ext_resource type="Script" uid="uid://b1yc1oa1hvody" path="res://server_info.gd" id="1_ejxhj"]
+[ext_resource type="Script" uid="uid://b1yc1oa1hvody" path="res://scenes/server_info.gd" id="1_ejxhj"]
 [ext_resource type="Theme" uid="uid://b3kq74llqlv3x" path="res://assets/MinimalUI4/MinimalUI.tres" id="2_ejxhj"]
 
 [node name="ServerInfo" type="Control"]

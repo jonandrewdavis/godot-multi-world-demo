@@ -211,6 +211,7 @@ func squash_and_strech(value : float, timing : float):
 # Multiplayer helpers
 
 func _filter_peer_ids(id: int):
+
 	if not main:
 		return false
 	

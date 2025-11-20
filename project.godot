@@ -27,6 +27,10 @@ gdscript/warnings/unused_signal=0
 
 window/per_pixel_transparency/allowed=true
 
+[global_group]
+
+Worlds=""
+
 [input]
 
 move_left={

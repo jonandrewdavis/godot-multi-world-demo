@@ -3,13 +3,6 @@
 [ext_resource type="Texture2D" uid="uid://db6ojh87xikee" path="res://assets/Ground003_9K_Color.jpg" id="1_6kg4g"]
 [ext_resource type="Texture2D" uid="uid://42wt8nd4qk0l" path="res://assets/texture_10_green.png" id="3_2bp6w"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w2sb5"]
-albedo_texture = ExtResource("1_6kg4g")
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_vgd8d"]
-material = SubResource("StandardMaterial3D_w2sb5")
-size = Vector2(100, 100)
-
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_vgd8d"]
 
 [sub_resource type="Sky" id="Sky_rtpuf"]
@@ -20,6 +13,15 @@ background_mode = 2
 sky = SubResource("Sky_rtpuf")
 ambient_light_color = Color(0.7476796, 0.7476796, 0.7476796, 1)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w2sb5"]
+albedo_texture = ExtResource("1_6kg4g")
+uv1_scale = Vector3(0.2, 0.2, 0.2)
+uv1_triplanar = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_vgd8d"]
+material = SubResource("StandardMaterial3D_w2sb5")
+size = Vector2(300, 300)
+
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_f2n7p"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yatvo"]
@@ -29,10 +31,7 @@ albedo_texture = ExtResource("3_2bp6w")
 material = SubResource("StandardMaterial3D_yatvo")
 size = Vector3(1, 5, 1)
 
-[node name="Forest" type="Node3D"]
-
-[node name="Grass" type="MeshInstance3D" parent="."]
-mesh = SubResource("PlaneMesh_vgd8d")
+[node name="Forest" type="Node3D" groups=["Worlds"]]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_60uqa")
@@ -44,10 +43,14 @@ shadow_enabled = true
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(0.84547627, -0.21984746, 0.48665905, 0, 0.91132426, 0.41168934, -0.53401303, -0.34807354, 0.77050304, 0, 5.2541695, 6.0951514)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="."]
+[node name="Grass" type="StaticBody3D" parent="."]
 collision_layer = 3
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+[node name="GrassMesh" type="MeshInstance3D" parent="Grass"]
+mesh = SubResource("PlaneMesh_vgd8d")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Grass"]
 shape = SubResource("WorldBoundaryShape3D_f2n7p")
 
 [node name="Tree" type="MeshInstance3D" parent="."]
