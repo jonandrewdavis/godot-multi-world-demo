@@ -35,7 +35,7 @@ func set_state(state_name : String) -> void:
 	# If we are the client owner, broadcast to other clients our current animation / state
 	if is_multiplayer_authority():
 		#sync_set_state.rpc(state_name)
-		for id in Global.get_players_in_world():
+		for id in get_tree().get_first_node_in_group('Main').get_players_in_world():
 			sync_set_state.rpc_id(id, state_name)
 
 @rpc('call_remote', 'authority', 'unreliable_ordered')

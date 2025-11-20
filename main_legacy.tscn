@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://x2pppnvib0gy"]
+
+[ext_resource type="Script" uid="uid://b0l4w8gqs0kvq" path="res://main.gd" id="1_h2yge"]
+[ext_resource type="PackedScene" uid="uid://cy7dkaw7yua30" path="res://server_info.tscn" id="2_lquwl"]
+[ext_resource type="PackedScene" uid="uid://c8e7hbw8m10mf" path="res://menu.tscn" id="3_lt3q4"]
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_h2yge")
+server_worlds_enabled = true
+
+[node name="ServerInfo" parent="." instance=ExtResource("2_lquwl")]
+unique_name_in_owner = true
+
+[node name="Menu" parent="." instance=ExtResource("3_lt3q4")]
+unique_name_in_owner = true
+
+[node name="Worlds" type="Node3D" parent="."]
+unique_name_in_owner = true

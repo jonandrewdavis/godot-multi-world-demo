@@ -4,6 +4,8 @@ extends Node3D
 # Rename this ndoe to "Network" 
 class_name Main
 
+signal signal_server_info
+
 var peer := ENetMultiplayerPeer.new()
 
 var PORT = 9999
@@ -11,21 +13,27 @@ var IP_ADDRESS = '127.0.0.1'
 
 @onready var snow_scene = preload("res://worlds/snow.tscn")
 @onready var forest_scene = preload("res://worlds/forest.tscn")
+@onready var char_scene = preload('res://assets/PlayerCharacter/PlayerCharacterScene.tscn')
 
-var char_scene = preload('res://assets/PlayerCharacter/PlayerCharacterScene.tscn')
+@onready var menu = $Menu
+@onready var server_info = $ServerInfo
 
-# NOTE: The server tracks this via a multiplayer syncronizer on main.
+## Updated by server as a list
+var current_players: Dictionary = {}
+
+# NOTE: You can have different node trees, but if you have a server
+# running both worlds, you will need positional offset as well!
 @export var server_worlds_enabled: bool = false
+
 var current_world: WORLD_OPTIONS = WORLD_OPTIONS.SNOW
 
+# TODO: organize this by proper godot standard
 enum WORLD_OPTIONS { 
 	SNOW,
 	FOREST
 }
 
 @onready var world_scenes: Array[Resource] = [snow_scene, forest_scene]
-
-@onready var menu = %Menu
 
 func _ready() -> void:
 	add_to_group('Main')
@@ -37,7 +45,8 @@ func _ready() -> void:
 	else:
 		%ButtonJoinSnow.pressed.connect(func(): join_game(WORLD_OPTIONS.SNOW))
 		%ButtonJoinForest.pressed.connect(func(): join_game(WORLD_OPTIONS.FOREST))
-
+		%ServerInfo.queue_free()
+		
 func host_game():
 	peer.create_server(PORT)
 	multiplayer.multiplayer_peer = peer
@@ -53,8 +62,6 @@ func host_game():
 		%Worlds.add_child(snow_world)
 		%Worlds.add_child(forest_world)
 
-	%ServerBackground.show()
-	%ServerInfo.show()
 	%Menu.queue_free()
 
 func join_game(world_to_join: WORLD_OPTIONS = current_world):
@@ -68,7 +75,6 @@ func join_game(world_to_join: WORLD_OPTIONS = current_world):
 		current_world = world_to_join
 		%Menu.hide()
 
-@export var current_players: Dictionary = {}
 
 # Set up in _ready(): multiplayer.connected_to_server.connect(on_client_connected)
 func on_client_connected():
@@ -85,21 +91,15 @@ func request_world(world: WORLD_OPTIONS):
 		'peer_id': player_peer_id, 
 		'world_id': world
 	}
+	
+	sync_current_players.rpc(current_players)
 	add_player_to_game(player_peer_id, world)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+# TODO: more efficient with add / remove rather than replace
+# add peer, remove peer
+@rpc("authority", 'call_remote', 'reliable')
+func sync_current_players(new_current_players):
+	current_players = new_current_players
 
 
 # NOTE: Not used. The player must request to be added rather than on connect.
@@ -108,12 +108,10 @@ func request_world(world: WORLD_OPTIONS):
 	#add_player_to_game(id)
 	
 func on_peer_disconnected(id):
-	if id in multiplayer.get_peers():
-		print("SERVER: peer disconnected " + str(id))
-		current_players.erase(id)
-		remove_player_from_game.rpc(id)
-	
-	update_server_display_text()
+	current_players.erase(id)
+	remove_player_from_game.rpc(id)
+	sync_current_players.rpc(current_players)	
+	signal_server_info.emit()
 	
 # NOTE: Only called on the server.
 func add_player_to_game(id_to_add: int, world: WORLD_OPTIONS):
@@ -123,12 +121,12 @@ func add_player_to_game(id_to_add: int, world: WORLD_OPTIONS):
 
 	# NOTE: Add the new peer to the server. 
 	# INFO: OPTIONAL. If the Sync returns false for id == 1, no server instance is needed. Can be commented out.
-	if server_worlds_enabled: 
-		var server_world: World = %Worlds.get_child(world)
-		var new_player: CharacterBody3D = char_scene.instantiate()
-		new_player.name = str(id_to_add)
-		new_player.position = Vector3(randi_range(-2, 2), 0.8, randi_range(-2, 2)) * 5
-		server_world.add_child(new_player)
+	#if server_worlds_enabled: 
+		#var server_world = %Worlds.get_child(world)
+		#var new_player: CharacterBody3D = char_scene.instantiate()
+		#new_player.name = str(id_to_add)
+		#new_player.position = Vector3(randi_range(-2, 2), 0.8, randi_range(-2, 2)) * 5
+		#server_world.add_child(new_player)
 	
 	# NOTE: This emulates a custom spawner that's targeted using rpc_id()
 	for player in current_players.values():
@@ -139,7 +137,7 @@ func add_player_to_game(id_to_add: int, world: WORLD_OPTIONS):
 			if player.peer_id != id_to_add:
 					add_player_to_world.rpc_id(id_to_add, player.peer_id)
 
-	update_server_display_text()
+	signal_server_info.emit()
 
 	# TODO: Instruct update visibility for manaully in this step.
 	# TODO: MultiplayerSpawner doesn't really work since it _always_ calls on all peers.
@@ -198,6 +196,8 @@ func join_world_in_progress(world: WORLD_OPTIONS):
 	
 var try_reparent = false
 	
+## Any peer calls this _to the server_ (id 1) to kick off the process
+## themselves from the current players for visibility purposes.
 # TODO: Try the reparent tactic, clean up
 @rpc('any_peer')
 func request_move_to_world(world: WORLD_OPTIONS):
@@ -212,6 +212,8 @@ func request_move_to_world(world: WORLD_OPTIONS):
 		remove_player_from_game.rpc(player_peer_id)
 		respond_to_move_world.rpc_id(player_peer_id, world)
 
+	sync_current_players.rpc(current_players)
+
 # called on the client, from the server (authority).
 @rpc('authority')
 func respond_to_move_world(world: WORLD_OPTIONS):
@@ -221,7 +223,7 @@ func respond_to_move_world(world: WORLD_OPTIONS):
 	%Worlds.get_child(0).queue_free()
 	current_world = world
 	request_world.rpc_id(1, world)
-
+	
 # called on the client, from the server (authority).
 @rpc('authority')
 func respond_to_move_world_using_new_peer(world: WORLD_OPTIONS):
@@ -243,23 +245,25 @@ func respond_to_move_world_using_new_peer(world: WORLD_OPTIONS):
 	var new_peer = ENetMultiplayerPeer.new()
 	new_peer.create_client(IP_ADDRESS, PORT)
 	multiplayer.multiplayer_peer = new_peer
+	
+# Return ids used to rpc_id it for each player in the world (and server?)
+func get_players_in_world(world: WORLD_OPTIONS = current_world) -> Array[int]:
+	if current_players.size() == 0:
+		return []
 
+	var players_in_world: Array[int] = []
 
-func update_server_display_text():
-	var snow_ids = Global.get_players_in_world(WORLD_OPTIONS.SNOW)
-	var forest_ids = Global.get_players_in_world(WORLD_OPTIONS.FOREST)
+	if server_worlds_enabled:
+		players_in_world.append(1)
 
-	%LabelBoxSnow.get_children().map(func(item): item.queue_free())
-	%LabelBoxForest.get_children().map(func(item): item.queue_free())
+	for player in current_players.values():
+		if player.peer_id != multiplayer.get_unique_id() and player.world_id == world and multiplayer.get_peers().has(player.peer_id):
+			players_in_world.append(player.peer_id)
 
-	for id in snow_ids:
-		var new_label = Label.new()
-		new_label.text = str(id)
-		new_label.name = str(id)
-		%LabelBoxSnow.add_child(new_label, true)
+	#return result 
+	##if main.current_players.has(id) and main.current_players[id].world_id == main.current_world
+	#var players_in_world = main.current_players.values().filter(func(player): return player.world_id == main.current_world)
+	#
 
-	for id in forest_ids:
-		var new_label = Label.new()
-		new_label.text = str(id)
-		new_label.name = str(id)
-		%LabelBoxForest.add_child(new_label, true)
+	#print("WORLD TIME", players_in_world)
+	return players_in_world
