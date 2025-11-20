@@ -6,7 +6,9 @@ Allows clients to mount a completely different scene tree than peers or the serv
 
 This would be useful for an MMO-like set up that wants to only mount, render, and synchronize players in a certain zone, or for level-based multiplayer games where some players can move to a new level or world and others can stay behind.
 
-![assets/splash.png](assets/splash.png)
+### [Watch the YouTube Demo](https://www.youtube.com/watch?v=-BtgNftbCpo)
+
+[![Check out the youtube demo](assets/preview.gif)](https://www.youtube.com/watch?v=-BtgNftbCpo)
 
 ### Details:
 
@@ -16,7 +18,7 @@ This would be useful for an MMO-like set up that wants to only mount, render, an
 
 ### Caveats
 
-- `MultiplayerSpawner` is not compatible with this method.\*\* _yet_
+- `MultiplayerSpawner` is not compatible with this method.\*\* (_yet_)
   - You must manually `add_child()` in the right places instead (worlds, players, etc.).
 - When a player does an `rpc_id()` you must call it only on peers in the same world. Like so:
 
