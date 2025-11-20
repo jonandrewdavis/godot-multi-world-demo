@@ -11,13 +11,13 @@ config_version=5
 [application]
 
 config/name="MultiWorldDemo"
-run/main_scene="uid://x2pppnvib0gy"
+run/main_scene="uid://b77r6dxlr2y1a"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="uid://ctt40rprmg62k"
 
 [autoload]
 
-Global="*res://global.gd"
+Global="*res://scripts/global.gd"
 
 [debug]
 
@@ -26,6 +26,10 @@ gdscript/warnings/unused_signal=0
 [display]
 
 window/per_pixel_transparency/allowed=true
+
+[global_group]
+
+Worlds=""
 
 [input]
 

@@ -1,6 +1,5 @@
-[gd_scene load_steps=10 format=3 uid="uid://veemjw63tdv1"]
+[gd_scene load_steps=9 format=3 uid="uid://veemjw63tdv1"]
 
-[ext_resource type="Script" uid="uid://qrwqps4enns4" path="res://worlds/world_system.gd" id="1_d44kl"]
 [ext_resource type="Material" uid="uid://c2oifk4nakpy1" path="res://assets/snow_material.tres" id="2_ohxak"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_im3h5"]
@@ -30,10 +29,7 @@ size = Vector3(3, 5, 5)
 [sub_resource type="BoxShape3D" id="BoxShape3D_ohxak"]
 size = Vector3(3, 5, 5)
 
-[node name="Snow" type="Node3D" node_paths=PackedStringArray("container", "spawner")]
-script = ExtResource("1_d44kl")
-container = NodePath("PlayersContainer")
-spawner = NodePath("MultiplayerSpawner")
+[node name="Snow" type="Node3D" groups=["Worlds"]]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_ohxak")
@@ -43,56 +39,51 @@ transform = Transform3D(1, 0, 0, 0, 0.9807069, 0.19548403, 0, -0.19548403, 0.980
 light_energy = 0.24
 shadow_enabled = true
 
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
-spawn_path = NodePath("../PlayersContainer")
-
-[node name="PlayersContainer" type="Node3D" parent="."]
-
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(0.6731932, -0.30443048, 0.6738939, -2.185236e-08, 0.9113243, 0.4116893, -0.73946667, -0.27714643, 0.6134974, 6.3503284, 4.6396585, 1.788446)
 
-[node name="Floor" type="StaticBody3D" parent="."]
+[node name="SnowFloor" type="StaticBody3D" parent="."]
 collision_layer = 3
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="SnowFloor"]
 mesh = SubResource("PlaneMesh_y8cpr")
 skeleton = NodePath("../..")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SnowFloor"]
 shape = SubResource("WorldBoundaryShape3D_q7rth")
 
-[node name="Block" type="StaticBody3D" parent="."]
+[node name="IceBlock" type="StaticBody3D" parent="."]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 3.4250808, 0, -5.821933)
 collision_layer = 3
 metadata/_edit_group_ = true
 
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="Block"]
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="IceBlock"]
 mesh = SubResource("BoxMesh_ohxak")
 skeleton = NodePath("../..")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Block"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="IceBlock"]
 shape = SubResource("BoxShape3D_ohxak")
 
-[node name="Block2" type="StaticBody3D" parent="."]
+[node name="IceBlock2" type="StaticBody3D" parent="."]
 transform = Transform3D(0.49612564, 0, -0.8682507, 0, 1, 0, 0.8682507, 0, 0.49612564, -7.083513, -1.1508511, 2.18367)
 collision_layer = 3
 metadata/_edit_group_ = true
 
-[node name="MeshInstance3D4" type="MeshInstance3D" parent="Block2"]
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="IceBlock2"]
 mesh = SubResource("BoxMesh_ohxak")
 skeleton = NodePath("../..")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Block2"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="IceBlock2"]
 shape = SubResource("BoxShape3D_ohxak")
 
-[node name="Block3" type="StaticBody3D" parent="."]
+[node name="IceBlock3" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1.9695039, -5.970901)
 collision_layer = 3
 metadata/_edit_group_ = true
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="Block3"]
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="IceBlock3"]
 mesh = SubResource("BoxMesh_ohxak")
 skeleton = NodePath("../..")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Block3"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="IceBlock3"]
 shape = SubResource("BoxShape3D_ohxak")

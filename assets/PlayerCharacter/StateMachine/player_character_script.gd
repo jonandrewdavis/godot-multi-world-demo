@@ -91,6 +91,7 @@ var coyote_jump_on : bool = false
 func _enter_tree() -> void:
 	set_multiplayer_authority(int(name))
 	$MultiplayerSynchronizer.add_visibility_filter(_filter_peer_ids)
+
 	# TODO: use VISIBILITY_PROCESS_NONE and manually add. Idle is good enough for now to detect new players
 	#$MultiplayerSynchronizer.set_visibility_update_mode(MultiplayerSynchronizer.VISIBILITY_PROCESS_IDLE)
 
@@ -211,6 +212,7 @@ func squash_and_strech(value : float, timing : float):
 # Multiplayer helpers
 
 func _filter_peer_ids(id: int):
+
 	if not main:
 		return false
 	
