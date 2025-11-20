@@ -215,8 +215,9 @@ func request_move_to_world(world: WORLD_OPTIONS):
 func respond_to_move_world(world: WORLD_OPTIONS):
 	# This timeout helps avoid updates from incoming peers who think we're still visible
 	# TODO: Figure out how to remove
+	await get_tree().create_timer(0.1).timeout
 	get_tree().get_first_node_in_group('Worlds').queue_free()
-	await get_tree().create_timer(0.15).timeout
+	await get_tree().create_timer(0.3).timeout
 	current_world = world
 	request_world.rpc_id(1, world)
 	
