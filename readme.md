@@ -10,6 +10,12 @@ This would be useful for an MMO-like set up that wants to only mount, render, an
 
 [![Check out the youtube demo](assets/preview.gif)](https://www.youtube.com/watch?v=-BtgNftbCpo)
 
+### Run locally
+
+- Open in Godot 4.5
+- Top Menu -> Select "Debug" -> Run multiple Instances (choose 3)
+- In one instance add "server" to the features
+
 ### Details:
 
 - Uses `add_visibilty_filter()` in https://docs.godotengine.org/en/stable/classes/class_multiplayersynchronizer.html#class-multiplayersynchronizer-method-add-visibility-filter
